@@ -1,0 +1,71 @@
+<div class="app-container">
+  <!-- Sidebar -->
+  <aside class="sidebar">
+    <div class="sidebar-brand">
+      <div class="brand-icon">
+        <span class="icon-inner">FC</span>
+      </div>
+      <div class="brand-info">
+        <h2>FinCore</h2>
+        <span class="badge badge-info">Nexus</span>
+      </div>
+    </div>
+    
+    <nav class="sidebar-menu">
+      <a routerLink="/dashboard" routerLinkActive="active" class="menu-item">
+        <span class="menu-icon">📊</span>
+        <span class="menu-text">Dashboard</span>
+      </a>
+      <a routerLink="/customers" routerLinkActive="active" class="menu-item">
+        <span class="menu-icon">👥</span>
+        <span class="menu-text">Customers</span>
+      </a>
+      <a routerLink="/accounts" routerLinkActive="active" class="menu-item">
+        <span class="menu-icon">💳</span>
+        <span class="menu-text">Accounts</span>
+      </a>
+      <a routerLink="/transactions" routerLinkActive="active" class="menu-item">
+        <span class="menu-icon">💸</span>
+        <span class="menu-text">Transactions</span>
+      </a>
+    </nav>
+    
+    <div class="sidebar-status">
+      <div class="status-indicator">
+        <span class="status-dot success"></span>
+        <span class="status-label">All Systems Live</span>
+      </div>
+      <p class="status-detail">Milestone 1 Core Services</p>
+    </div>
+  </aside>
+
+  <!-- Main Content Wrapper -->
+  <div class="main-wrapper">
+    <header class="app-header">
+      <div class="header-search">
+        <h1>FinCore Enterprise Portal</h1>
+      </div>
+      <div class="header-actions">
+        <div class="stat-badge">
+          <span class="stat-lbl">Uptime</span>
+          <span class="stat-val text-success">99.99%</span>
+        </div>
+        <div class="stat-badge">
+          <span class="stat-lbl">Latency</span>
+          <span class="stat-val text-gradient">47ms</span>
+        </div>
+        <div class="user-profile">
+          <span class="user-avatar">AD</span>
+          <div class="user-info">
+            <span class="user-name">System Administrator</span>
+            <span class="user-role">Super Teller</span>
+          </div>
+        </div>
+      </div>
+    </header>
+
+    <main class="content-body">
+      <router-outlet></router-outlet>
+    </main>
+  </div>
+</div>

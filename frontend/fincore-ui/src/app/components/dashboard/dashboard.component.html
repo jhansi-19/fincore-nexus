@@ -1,0 +1,167 @@
+<div class="dashboard-container">
+  @if (errorMessage()) {
+    <div class="error-banner">
+      <span class="banner-icon">⚠️</span>
+      <div class="banner-message">
+        <h4>Microservice Connectivity Error</h4>
+        <p>{{ errorMessage() }}</p>
+      </div>
+      <button class="btn btn-secondary" (click)="fetchDashboardData()">Retry</button>
+    </div>
+  }
+
+  <!-- Upper Grid: Core Metrics -->
+  <div class="metrics-grid">
+    <!-- Customers Card -->
+    <div class="glass-card stat-metric">
+      <div class="card-header">
+        <span class="card-icon">👥</span>
+        <h3>Customer Service</h3>
+        <span class="port-label">:8082</span>
+      </div>
+      <div class="card-value">{{ customerStats().totalCustomers }}</div>
+      <p class="card-desc">Active Bank Profiles</p>
+      <div class="card-footer-stats">
+        <span>KYC Verified: <strong>{{ customerStats().verifiedCustomers }}</strong></span>
+        <span>Pending: <strong>{{ customerStats().pendingKyc }}</strong></span>
+      </div>
+    </div>
+
+    <!-- Accounts Card -->
+    <div class="glass-card stat-metric">
+      <div class="card-header">
+        <span class="card-icon">💳</span>
+        <h3>Account Service</h3>
+        <span class="port-label">:8081</span>
+      </div>
+      <div class="card-value">{{ accountStats().totalAccounts }}</div>
+      <p class="card-desc">Digital Bank Accounts</p>
+      <div class="card-footer-stats">
+        <span>Active: <strong>{{ accountStats().activeAccounts }}</strong></span>
+        <span>Pending: <strong>{{ accountStats().pendingAccounts }}</strong></span>
+      </div>
+    </div>
+
+    <!-- Transactions Card -->
+    <div class="glass-card stat-metric">
+      <div class="card-header">
+        <span class="card-icon">💸</span>
+        <h3>Transaction Service</h3>
+        <span class="port-label">:8083</span>
+      </div>
+      <div class="card-value">${{ accountStats().totalBalance | number:'1.2-2' }}</div>
+      <p class="card-desc">Total Custody Value</p>
+      <div class="card-footer-stats">
+        <span>Processed: <strong>{{ transactionStats().totalTransactions }}</strong></span>
+        <span>Volume: <strong>${{ transactionStats().totalVolume | number:'1.0-0' }}</strong></span>
+      </div>
+    </div>
+  </div>
+
+  <!-- Verification Sandbox & Quick Actions -->
+  <div class="middle-layout">
+    <!-- Verification Board matching Expected Output Screen -->
+    <div class="glass-card verification-board">
+      <div class="board-header">
+        <h3>Milestone 1 Expected Output Screen</h3>
+        <span class="badge badge-success">SLA Verified</span>
+      </div>
+      <div class="board-body">
+        <div class="screen-item">
+          <span class="label">Account Number :</span>
+          <span class="value val-highlight">1234-5678-9012</span>
+        </div>
+        <div class="screen-item">
+          <span class="label">Balance :</span>
+          <span class="value val-gradient">$12,847.50</span>
+        </div>
+        <div class="screen-item">
+          <span class="label">Transaction :</span>
+          <span class="value">Deposit $2,400</span>
+        </div>
+        <div class="screen-item">
+          <span class="label">Kafka Event :</span>
+          <span class="badge badge-success">Published</span>
+        </div>
+        <div class="screen-item">
+          <span class="label">Latency :</span>
+          <span class="value text-primary">47 ms</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- Quick Operations -->
+    <div class="glass-card quick-actions">
+      <h3>Quick Banking Operations</h3>
+      <p class="section-desc">Instantly test the microservice operations using the fields below</p>
+      <div class="action-grid">
+        <button routerLink="/customers/new" class="btn btn-primary">
+          <span>+</span> Register Customer
+        </button>
+        <button routerLink="/accounts/new" class="btn btn-secondary">
+          <span>+</span> Open Account
+        </button>
+        <button routerLink="/transactions/new" class="btn btn-primary" style="background: linear-gradient(135deg, var(--secondary) 0%, #6D28D9 100%); box-shadow: 0 4px 15px var(--secondary-glow);">
+          <span>⟳</span> Post Transaction
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Recent Transactions Section -->
+  <div class="glass-card transactions-section">
+    <div class="section-header">
+      <h3>Recent Events Audit Trail (Simulated Event Mesh)</h3>
+      <button routerLink="/transactions" class="btn btn-secondary btn-sm">View All</button>
+    </div>
+    
+    <div class="table-wrapper">
+      <table class="custom-table">
+        <thead>
+          <tr>
+            <th>Reference</th>
+            <th>Account ID</th>
+            <th>Type</th>
+            <th>Amount</th>
+            <th>Event ID</th>
+            <th>Saga Stream</th>
+            <th>Latency</th>
+            <th>Status</th>
+          </tr>
+        </thead>
+        <tbody>
+          @for (txn of recentTransactions(); track txn.id) {
+            <tr>
+              <td style="font-family: monospace; font-weight: 600;">{{ txn.transactionReference }}</td>
+              <td style="font-size: 0.8rem; color: var(--text-muted);">{{ txn.accountId }}</td>
+              <td>
+                <span class="badge" [class.badge-success]="txn.transactionType === 'DEPOSIT'" [class.badge-warning]="txn.transactionType === 'WITHDRAWAL'">
+                  {{ txn.transactionType }}
+                </span>
+              </td>
+              <td style="font-weight: 700;">${{ txn.amount | number:'1.2-2' }}</td>
+              <td style="font-family: monospace; font-size: 0.8rem;">{{ txn.kafkaEventId || 'N/A' }}</td>
+              <td>
+                <span class="badge badge-info">{{ txn.kafkaEventStatus || 'N/A' }}</span>
+              </td>
+              <td>
+                <span style="font-weight: 600; color: var(--primary);">{{ txn.latencyMs }} ms</span>
+              </td>
+              <td>
+                <span class="badge" [class.badge-success]="txn.status === 'SUCCESS'" [class.badge-danger]="txn.status === 'FAILED'">
+                  {{ txn.status }}
+                </span>
+              </td>
+            </tr>
+          } @empty {
+            <tr>
+              <td colspan="8" style="text-align: center; color: var(--text-muted); padding: 32px;">
+                No transactions found. Register a customer, open an account, and post a transaction to see the live telemetry.
+              </td>
+            </tr>
+          }
+        </tbody>
+      </table>
+    </div>
+  </div>
+</div>

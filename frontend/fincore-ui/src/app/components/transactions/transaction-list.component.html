@@ -1,0 +1,110 @@
+<div class="list-container">
+  <div class="list-header">
+    <div>
+      <h2>Transaction Processing Core</h2>
+      <p class="section-desc">Live audit logs of the bank event mesh and transactions</p>
+    </div>
+    <button routerLink="/transactions/new" class="btn btn-primary">+ Post Transaction</button>
+  </div>
+
+  @if (error()) {
+    <div class="error-banner" style="margin-bottom: 24px;">
+      <span>⚠️ {{ error() }}</span>
+    </div>
+  }
+
+  <!-- Statement Generator Section -->
+  <div class="glass-card statement-box">
+    <h3>Statement Generation Engine</h3>
+    <p class="box-desc">Generate audit-compliant account statements by filtering dates</p>
+    <div class="statement-form">
+      <div class="form-group inline">
+        <label class="form-label" for="stmtAccount">Account *</label>
+        <select id="stmtAccount" [ngModel]="selectedAccountId()" (ngModelChange)="selectedAccountId.set($event)" class="form-control">
+          @for (acc of accounts(); track acc.id) {
+            <option [value]="acc.id">
+              {{ acc.accountNumber }} (${{ acc.balance }})
+            </option>
+          }
+        </select>
+      </div>
+
+      <div class="form-group inline">
+        <label class="form-label" for="fromDate">From *</label>
+        <input type="date" id="fromDate" [ngModel]="fromDate()" (ngModelChange)="fromDate.set($event)" class="form-control">
+      </div>
+
+      <div class="form-group inline">
+        <label class="form-label" for="toDate">To *</label>
+        <input type="date" id="toDate" [ngModel]="toDate()" (ngModelChange)="toDate.set($event)" class="form-control">
+      </div>
+
+      <button (click)="generateStatement()" [disabled]="generatingStatement()" class="btn btn-primary btn-stmt">
+        {{ generatingStatement() ? 'Generating...' : 'Generate Statement' }}
+      </button>
+      <button (click)="loadTransactions()" class="btn btn-secondary btn-stmt">Clear</button>
+    </div>
+  </div>
+
+  @if (loading()) {
+    <div class="loading-state">
+      <div class="spinner"></div>
+      <p>Fetching transaction event ledger...</p>
+    </div>
+  } @else {
+    <div class="glass-card table-section">
+      <div class="table-wrapper">
+        <table class="custom-table">
+          <thead>
+            <tr>
+              <th>Reference</th>
+              <th>Account ID</th>
+              <th>Type</th>
+              <th>Amount</th>
+              <th>Bal Before</th>
+              <th>Bal After</th>
+              <th>Kafka Event ID</th>
+              <th>Event Status</th>
+              <th>Latency</th>
+              <th>Status</th>
+            </tr>
+          </thead>
+          <tbody>
+            @for (txn of transactions(); track txn.id) {
+              <tr>
+                <td style="font-family: monospace; font-weight: 600;">{{ txn.transactionReference }}</td>
+                <td style="font-size: 0.8rem; color: var(--text-muted); font-family: monospace;">{{ txn.accountId }}</td>
+                <td>
+                  <span class="badge" [class.badge-success]="txn.transactionType === 'DEPOSIT'" [class.badge-warning]="txn.transactionType === 'WITHDRAWAL'" [class.badge-info]="txn.transactionType === 'TRANSFER'">
+                    {{ txn.transactionType }}
+                  </span>
+                </td>
+                <td style="font-weight: 700;">${{ txn.amount | number:'1.2-2' }}</td>
+                <td style="color: var(--text-secondary);">${{ txn.balanceBefore | number:'1.2-2' }}</td>
+                <td style="color: var(--primary); font-weight: 600;">${{ txn.balanceAfter | number:'1.2-2' }}</td>
+                <td style="font-family: monospace; font-size: 0.85rem;">{{ txn.kafkaEventId || 'N/A' }}</td>
+                <td>
+                  <span class="badge badge-success">{{ txn.kafkaEventStatus }}</span>
+                </td>
+                <td>
+                  <span style="font-weight: 600; color: var(--primary);">{{ txn.latencyMs }} ms</span>
+                </td>
+                <td>
+                  <span class="badge" [class.badge-success]="txn.status === 'SUCCESS'" [class.badge-danger]="txn.status === 'FAILED'">
+                    {{ txn.status }}
+                  </span>
+                </td>
+              </tr>
+            } @empty {
+              <tr>
+                <td colspan="10" style="text-align: center; color: var(--text-muted); padding: 40px;">
+                  No transactions matches. Post a deposit or withdrawal first.
+                </td>
+              </tr>
+            }
+          </tbody>
+        </table>
+      </div>
+    </div>
+  }
+</div>

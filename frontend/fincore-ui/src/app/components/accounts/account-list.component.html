@@ -1,0 +1,76 @@
+<div class="list-container">
+  <div class="list-header">
+    <div>
+      <h2>Customer Accounts</h2>
+      <p class="section-desc">Manage digital banking account lifecycles and balance metrics</p>
+    </div>
+    <button routerLink="/accounts/new" class="btn btn-primary">+ Open Account</button>
+  </div>
+
+  @if (error()) {
+    <div class="error-banner" style="margin-bottom: 24px;">
+      <span>⚠️ {{ error() }}</span>
+    </div>
+  }
+
+  @if (loading()) {
+    <div class="loading-state">
+      <div class="spinner"></div>
+      <p>Fetching account records...</p>
+    </div>
+  } @else {
+    <div class="glass-card table-section">
+      <div class="table-wrapper">
+        <table class="custom-table">
+          <thead>
+            <tr>
+              <th>Account Number</th>
+              <th>Customer ID</th>
+              <th>Type</th>
+              <th>Interest Rate</th>
+              <th>Balance</th>
+              <th>Status</th>
+              <th style="text-align: right;">Actions</th>
+            </tr>
+          </thead>
+          <tbody>
+            @for (acc of accounts(); track acc.id) {
+              <tr>
+                <td>
+                  <div class="acc-num">
+                    <strong>{{ acc.accountNumber }}</strong>
+                    <span class="acc-id">{{ acc.id }}</span>
+                  </div>
+                </td>
+                <td style="font-family: monospace; font-size: 0.8rem; color: var(--text-muted);">{{ acc.customerId }}</td>
+                <td>
+                  <span class="badge badge-info">{{ acc.accountType }}</span>
+                </td>
+                <td style="font-weight: 600;">{{ acc.interestRate }}%</td>
+                <td style="font-weight: 700;" class="text-gradient">${{ acc.balance | number:'1.2-2' }}</td>
+                <td>
+                  <span class="badge" [class.badge-success]="acc.status === 'ACTIVE'" [class.badge-warning]="acc.status === 'PENDING' || acc.status === 'DORMANT'" [class.badge-danger]="acc.status === 'CLOSED' || acc.status === 'FROZEN'">
+                    {{ acc.status }}
+                  </span>
+                </td>
+                <td style="text-align: right;">
+                  <div class="action-buttons">
+                    <button (click)="updateStatus(acc.id!, 'ACTIVE')" class="btn-action btn-verify" title="Activate Account">✓</button>
+                    <button (click)="updateStatus(acc.id!, 'FROZEN')" class="btn-action btn-review" title="Freeze Account">❄</button>
+                    <button (click)="updateStatus(acc.id!, 'CLOSED')" class="btn-action btn-reject" title="Close Account">✗</button>
+                  </div>
+                </td>
+              </tr>
+            } @empty {
+              <tr>
+                <td colspan="7" style="text-align: center; color: var(--text-muted); padding: 40px;">
+                  No accounts found. Click "Open Account" to begin.
+                </td>
+              </tr>
+            }
+          </tbody>
+        </table>
+      </div>
+    </div>
+  }
+</div>

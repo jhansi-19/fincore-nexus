@@ -1,0 +1,118 @@
+<div class="form-container">
+  <div class="form-header">
+    <h2>Post Account Transaction</h2>
+    <p class="section-desc">Submit transaction events to the distributed core bank engine</p>
+  </div>
+
+  @if (errorMessage()) {
+    <div class="error-banner" style="margin-bottom: 24px;">
+      <span>⚠️ {{ errorMessage() }}</span>
+    </div>
+  }
+
+  <!-- Success Telemetry Receipt Board matching the PDF Expected Screen -->
+  @if (successReceipt()) {
+    <div class="glass-card receipt-board animate-fade-in">
+      <div class="receipt-header">
+        <div class="status-indicator">
+          <span class="status-dot success"></span>
+          <h3>Transaction Telemetry</h3>
+        </div>
+        <span class="badge badge-success">{{ successReceipt().status }}</span>
+      </div>
+      
+      <div class="receipt-body">
+        <div class="receipt-row">
+          <span class="label">Reference ID</span>
+          <span class="value mono">{{ successReceipt().reference }}</span>
+        </div>
+        <div class="receipt-row">
+          <span class="label">Account Number :</span>
+          <span class="value val-highlight">{{ successReceipt().accountNumber }}</span>
+        </div>
+        <div class="receipt-row">
+          <span class="label">Balance :</span>
+          <span class="value val-gradient">${{ successReceipt().balance | number:'1.2-2' }}</span>
+        </div>
+        <div class="receipt-row">
+          <span class="label">Transaction :</span>
+          <span class="value">{{ successReceipt().type }} ${{ successReceipt().amount | number:'1.2-2' }}</span>
+        </div>
+        <div class="receipt-row">
+          <span class="label">Kafka Event :</span>
+          <span class="badge badge-success">{{ successReceipt().kafkaEvent }}</span>
+        </div>
+        <div class="receipt-row">
+          <span class="label">Latency :</span>
+          <span class="value text-primary">{{ successReceipt().latency }} ms</span>
+        </div>
+      </div>
+      
+      <div class="receipt-footer">
+        <button (click)="successReceipt.set(null)" class="btn btn-secondary btn-block">Post Another Transaction</button>
+      </div>
+    </div>
+  } @else {
+    <div class="glass-card">
+      @if (loadingAccounts()) {
+        <div style="text-align: center; color: var(--text-secondary); padding: 32px;">
+          <p>Loading digital accounts list...</p>
+        </div>
+      } @else {
+        <form (ngSubmit)="onSubmit()" #txnForm="ngForm">
+          <div class="form-group">
+            <label class="form-label" for="accountId">Associated Bank Account *</label>
+            <select id="accountId" name="accountId" [(ngModel)]="transaction.accountId" required class="form-control">
+              @for (acc of accounts(); track acc.id) {
+                <option [value]="acc.id">
+                  {{ acc.accountNumber }} (Bal: ${{ acc.balance }})
+                </option>
+              } @empty {
+                <option value="" disabled>-- No accounts found --</option>
+              }
+            </select>
+            @if (accounts().length === 0) {
+              <p class="form-help text-danger" style="margin-top: 6px;">
+                You must open at least one digital account first! <a routerLink="/accounts/new" class="text-gradient">Open Account</a>
+              </p>
+            }
+          </div>
+
+          <div class="form-row">
+            <div class="form-group">
+              <label class="form-label" for="transactionType">Transaction Type *</label>
+              <select id="transactionType" name="transactionType" [(ngModel)]="transaction.transactionType" required class="form-control">
+                <option value="DEPOSIT">DEPOSIT (+)</option>
+                <option value="WITHDRAWAL">WITHDRAWAL (-)</option>
+                <option value="TRANSFER">TRANSFER (⇄)</option>
+                <option value="FEE">FEE (system charge)</option>
+                <option value="INTEREST">INTEREST credit</option>
+              </select>
+            </div>
+            
+            <div class="form-group">
+              <label class="form-label" for="amount">Transaction Amount *</label>
+              <input type="number" id="amount" name="amount" [(ngModel)]="transaction.amount" required min="0.01" step="0.01" class="form-control" placeholder="e.g. 2400">
+            </div>
+          </div>
+
+          <div class="form-group">
+            <label class="form-label" for="description">Transaction Description</label>
+            <input type="text" id="description" name="description" [(ngModel)]="transaction.description" class="form-control" placeholder="e.g. Payroll Credit June 2026">
+          </div>
+
+          <div class="form-actions">
+            <button type="button" routerLink="/transactions" class="btn btn-secondary">Cancel</button>
+            <button type="submit" [disabled]="!txnForm.form.valid || loading() || accounts().length === 0" class="btn btn-primary">
+              @if (loading()) {
+                <span>Processing...</span>
+              } @else {
+                <span>Post Transaction</span>
+              }
+            </button>
+          </div>
+        </form>
+      }
+    </div>
+  }
+</div>

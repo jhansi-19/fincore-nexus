@@ -1,0 +1,76 @@
+<div class="form-container">
+  <div class="form-header">
+    <h2>Open Digital Account</h2>
+    <p class="section-desc">Create a new account associated with a verified customer profile</p>
+  </div>
+
+  @if (errorMessage()) {
+    <div class="error-banner" style="margin-bottom: 24px;">
+      <span>⚠️ {{ errorMessage() }}</span>
+    </div>
+  }
+
+  <div class="glass-card">
+    @if (loadingCustomers()) {
+      <div style="text-align: center; color: var(--text-secondary); padding: 32px;">
+        <p>Loading customers list...</p>
+      </div>
+    } @else {
+      <form (ngSubmit)="onSubmit()" #accForm="ngForm">
+        <div class="form-group">
+          <label class="form-label" for="customerId">Associated Customer Profile *</label>
+          <select id="customerId" name="customerId" [(ngModel)]="account.customerId" required class="form-control">
+            @for (cust of customers(); track cust.id) {
+              <option [value]="cust.id">
+                {{ cust.firstName }} {{ cust.lastName }} ({{ cust.email }})
+              </option>
+            } @empty {
+              <option value="" disabled>-- No registered customers found --</option>
+            }
+          </select>
+          @if (customers().length === 0) {
+            <p class="form-help text-danger" style="margin-top: 6px;">
+              You must register at least one customer first! <a routerLink="/customers/new" class="text-gradient">Register Customer</a>
+            </p>
+          }
+        </div>
+
+        <div class="form-row">
+          <div class="form-group">
+            <label class="form-label" for="accountType">Account Type *</label>
+            <select id="accountType" name="accountType" [(ngModel)]="account.accountType" required class="form-control">
+              <option value="SAVINGS">Savings Account (3.5% APY, Min: $500)</option>
+              <option value="CURRENT">Current Account (0% APY, Min: $1000)</option>
+              <option value="FIXED_DEPOSIT">Fixed Deposit (6.75% APY, Min: $10000)</option>
+            </select>
+          </div>
+          
+          <div class="form-group">
+            <label class="form-label" for="currency">Currency *</label>
+            <select id="currency" name="currency" [(ngModel)]="account.currency" required class="form-control">
+              <option value="USD">USD ($)</option>
+              <option value="EUR">EUR (€)</option>
+              <option value="GBP">GBP (£)</option>
+            </select>
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label class="form-label" for="balance">Initial Deposit Balance *</label>
+          <input type="number" id="balance" name="balance" [(ngModel)]="account.balance" required min="0" class="form-control" placeholder="e.g. 5000">
+        </div>
+
+        <div class="form-actions">
+          <button type="button" routerLink="/accounts" class="btn btn-secondary">Cancel</button>
+          <button type="submit" [disabled]="!accForm.form.valid || loading() || customers().length === 0" class="btn btn-primary">
+            @if (loading()) {
+              <span>Opening...</span>
+            } @else {
+              <span>Open Account</span>
+            }
+          </button>
+        </div>
+      </form>
+    }
+  </div>
+</div>

@@ -1,0 +1,76 @@
+<div class="list-container">
+  <div class="list-header">
+    <div>
+      <h2>Customer Profiles</h2>
+      <p class="section-desc">Manage bank customers and verify regulatory KYC details</p>
+    </div>
+    <button routerLink="/customers/new" class="btn btn-primary">+ Register Customer</button>
+  </div>
+
+  @if (error()) {
+    <div class="error-banner" style="margin-bottom: 24px;">
+      <span>⚠️ {{ error() }}</span>
+    </div>
+  }
+
+  @if (loading()) {
+    <div class="loading-state">
+      <div class="spinner"></div>
+      <p>Fetching customer records...</p>
+    </div>
+  } @else {
+    <div class="glass-card table-section">
+      <div class="table-wrapper">
+        <table class="custom-table">
+          <thead>
+            <tr>
+              <th>Name</th>
+              <th>Email</th>
+              <th>Phone</th>
+              <th>Location</th>
+              <th>Type</th>
+              <th>KYC Status</th>
+              <th style="text-align: right;">Actions</th>
+            </tr>
+          </thead>
+          <tbody>
+            @for (cust of customers(); track cust.id) {
+              <tr>
+                <td>
+                  <div class="cust-name">
+                    <strong>{{ cust.firstName }} {{ cust.lastName }}</strong>
+                    <span class="cust-id">{{ cust.id }}</span>
+                  </div>
+                </td>
+                <td>{{ cust.email }}</td>
+                <td>{{ cust.phone || 'N/A' }}</td>
+                <td>{{ cust.city ? cust.city + ', ' + cust.state : 'N/A' }}</td>
+                <td>
+                  <span class="badge badge-info">{{ cust.customerType }}</span>
+                </td>
+                <td>
+                  <span class="badge" [class.badge-success]="cust.kycStatus === 'VERIFIED'" [class.badge-warning]="cust.kycStatus === 'PENDING' || cust.kycStatus === 'IN_REVIEW'" [class.badge-danger]="cust.kycStatus === 'REJECTED'">
+                    {{ cust.kycStatus }}
+                  </span>
+                </td>
+                <td style="text-align: right;">
+                  <div class="action-buttons">
+                    <button (click)="changeKyc(cust.id!, 'VERIFIED')" class="btn-action btn-verify" title="Verify KYC">✓</button>
+                    <button (click)="changeKyc(cust.id!, 'IN_REVIEW')" class="btn-action btn-review" title="Set In Review">⏱</button>
+                    <button (click)="changeKyc(cust.id!, 'REJECTED')" class="btn-action btn-reject" title="Reject KYC">✗</button>
+                  </div>
+                </td>
+              </tr>
+            } @empty {
+              <tr>
+                <td colspan="7" style="text-align: center; color: var(--text-muted); padding: 40px;">
+                  No customers registered. Click "Register Customer" to begin.
+                </td>
+              </tr>
+            }
+          </tbody>
+        </table>
+      </div>
+    </div>
+  }
+</div>

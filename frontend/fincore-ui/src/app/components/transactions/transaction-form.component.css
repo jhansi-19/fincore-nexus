@@ -1,0 +1,113 @@
+.form-container {
+  max-width: 800px;
+  margin: 0 auto;
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+}
+.form-header {
+  margin-bottom: 8px;
+}
+.form-header h2 {
+  font-size: 1.5rem;
+  font-weight: 700;
+}
+.section-desc {
+  font-size: 0.85rem;
+  color: var(--text-secondary);
+}
+
+.form-row {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 20px;
+}
+
+.form-actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 12px;
+  margin-top: 24px;
+  border-top: 1px solid var(--border-color);
+  padding-top: 24px;
+}
+.form-actions button {
+  min-width: 140px;
+}
+
+/* Telemetry Receipt Box Styling */
+.receipt-board {
+  border-left: 4px solid var(--primary);
+  background: linear-gradient(135deg, rgba(20, 24, 45, 0.8) 0%, rgba(10, 14, 25, 0.6) 100%);
+  padding: 32px;
+}
+.receipt-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  border-bottom: 1px solid var(--border-color);
+  padding-bottom: 20px;
+  margin-bottom: 24px;
+}
+.receipt-header h3 {
+  font-size: 1.1rem;
+  font-weight: 700;
+}
+.receipt-body {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+.receipt-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding-bottom: 12px;
+  border-bottom: 1px dashed rgba(255, 255, 255, 0.05);
+}
+.receipt-row:last-child {
+  border-bottom: none;
+}
+.receipt-row .label {
+  color: var(--text-secondary);
+  font-size: 0.95rem;
+}
+.receipt-row .value {
+  font-weight: 700;
+  font-size: 1rem;
+}
+.val-highlight {
+  font-family: monospace;
+  letter-spacing: 0.05em;
+  color: var(--primary);
+}
+.val-gradient {
+  background: linear-gradient(135deg, #FFF 0%, var(--primary) 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  font-size: 1.25rem !important;
+}
+.receipt-footer {
+  margin-top: 32px;
+  padding-top: 24px;
+  border-top: 1px solid var(--border-color);
+}
+.btn-block {
+  width: 100%;
+}
+
+.text-danger {
+  color: var(--color-danger);
+}
+.text-gradient {
+  color: var(--primary);
+  text-decoration: underline;
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(10px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+.animate-fade-in {
+  animation: fadeIn 0.4s ease-out forwards;
+}

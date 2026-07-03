@@ -1,0 +1,9 @@
+target/
+.idea/
+.vscode/
+*.class
+*.log
+.env
+node_modules/
+frontend/fincore-ui/.angular/
+dist/

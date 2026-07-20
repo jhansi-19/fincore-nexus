@@ -30,5 +30,18 @@ export const routes: Routes = [
     path: 'transactions/new',
     loadComponent: () => import('./components/transactions/transaction-form.component').then(m => m.TransactionFormComponent)
   },
+  {
+    path: 'loans',
+    loadComponent: () => import('./components/loans/loan-list.component').then(m => m.LoanListComponent)
+  },
+  {
+    path: 'loans/new',
+    loadComponent: () => import('./components/loans/loan-form.component').then(m => m.LoanFormComponent)
+  },
+  {
+    path: 'loans/:id',
+    loadComponent: () => import('./components/loans/loan-detail.component').then(m => m.LoanDetailComponent)
+  },
   { path: '**', redirectTo: 'dashboard' }
 ];
+

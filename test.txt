@@ -1,1 +1,67 @@
 test
+psql -U postgres -d fincore_db
+SELECT * FROM transactions LIMIT 5;
+
+Transaction Service API Guide for Postman
+Here are the exact details to copy and paste into Postman to test the Transaction Service.
+
+1. Get All Transactions
+Method: GET
+URL: http://localhost:8083/api/v1/transactions
+Body: (Leave empty)
+2. Get Dashboard Stats
+Method: GET
+URL: http://localhost:8083/api/v1/transactions/stats/dashboard
+Body: (Leave empty)
+3. Get Recent Transactions
+Method: GET
+URL: http://localhost:8083/api/v1/transactions/recent
+Body: (Leave empty)
+4. Create a Transaction (Deposit)
+Method: POST
+URL: http://localhost:8083/api/v1/transactions
+Body: Select Raw -> JSON and paste this:
+json
+
+{
+  "accountId": "REPLACE_WITH_REAL_ACCOUNT_ID",
+  "transactionType": "DEPOSIT",
+  "amount": 150.00,
+  "description": "Initial deposit"
+}
+5. Create a Transaction (Withdrawal)
+Method: POST
+URL: http://localhost:8083/api/v1/transactions
+Body: Select Raw -> JSON and paste this:
+json
+
+{
+  "accountId": "REPLACE_WITH_REAL_ACCOUNT_ID",
+  "transactionType": "WITHDRAWAL",
+  "amount": 50.00,
+  "description": "ATM Withdrawal"
+}
+6. Get Transactions by Specific Account ID
+Method: GET
+URL: http://localhost:8083/api/v1/transactions/account/REPLACE_WITH_REAL_ACCOUNT_ID
+Body: (Leave empty)
+7. Get Specific Transaction by Transaction ID
+Method: GET
+URL: http://localhost:8083/api/v1/transactions/REPLACE_WITH_REAL_TRANSACTION_ID
+Body: (Leave empty)
+8. Get Account Statement (Date Filtered)
+Method: GET
+URL: http://localhost:8083/api/v1/transactions/account/REPLACE_WITH_REAL_ACCOUNT_ID/statement?from=2026-01-01&to=2026-12-31
+Body: (Leave empty)
+Note: For the POST requests and Account-specific GET requests, you must replace REPLACE_WITH_REAL_ACCOUNT_ID with a real UUID that exists in your Account Service database.
+b0000001-0000-0000-0000-000000000002
+
+http://localhost:8084/api/v1/loans/apply
+{
+  "customerId": "a0000001-0000-0000-0000-000000000001",
+  "accountId": "b0000001-0000-0000-0000-000000000001",
+  "loanType": "HOME_LOAN",
+  "principalAmount": 240000,
+  "tenureMonths": 240,
+  "purpose": "Home purchase in Times Square"
+}

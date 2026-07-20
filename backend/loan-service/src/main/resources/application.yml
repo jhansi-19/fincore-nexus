@@ -1,0 +1,22 @@
+server:
+  port: 8084
+
+spring:
+  application:
+    name: loan-service
+  datasource:
+    url: jdbc:postgresql://localhost:5432/fincore_db
+    username: postgres
+    password: fincore123
+    driver-class-name: org.postgresql.Driver
+  jpa:
+    hibernate:
+      ddl-auto: update
+    show-sql: true
+    properties:
+      hibernate:
+        dialect: org.hibernate.dialect.PostgreSQLDialect
+
+fincore:
+  account-service:
+    url: http://localhost:8081

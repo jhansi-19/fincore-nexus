@@ -15,6 +15,8 @@ public interface AccountRepository extends JpaRepository<Account, UUID> {
     Optional<Account> findByAccountNumber(String accountNumber);
     List<Account> findByCustomerId(UUID customerId);
     List<Account> findByStatus(String status);
+
+
     
     @Query("SELECT COUNT(a) FROM Account a WHERE a.status = 'ACTIVE'")
     long countActiveAccounts();
